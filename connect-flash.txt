@@ -1,0 +1,48 @@
+npm install connect-flash --save
+
+
+
+***in app.js:
+var flash = require("connect-flash");
+app.use(flash());
+//this should come before passport
+//you also need express-session setup and working
+
+
+
+***to send a message, for example in isLoggedIn middleware:
+request.flash("error", "You must be logged in to do that");
+response.redirect("/login");
+// "error" is a "key"  Could have many keys, such as "success", "warning"...
+// your message is stored in/referenced by:   request.flash("error")
+// note redirect follows setting the key and message.
+
+
+
+***in app.js, you make this variable available *to all the templates* like this:
+app.use(function(request,response,next){
+    response.locals.currentUser = request.user  //(not part of flash setup)
+    response.locals.error = request.flash("error");     //variable "error" becomes "global" 
+    response.locals.success = request.flash("success");  //variable "success" becomes "global" 
+    next();
+});
+// typeof request.flash ---> FUNCTION!  That's why you have to pass in a "key" value.  
+// request.flash("error") ---> object object.
+
+
+
+
+***In header.ejs partial, you can put the code to display any non-zero-lenth messages
+<div class="container">
+    <% if(error && error.length > 0){ %>
+        <div class="alert alert-danger" role="alert">
+            <%= error %>
+        </div>
+    <% } %>
+    <% if(success && success.length>0){ %>
+        <div class="alert alert-success" role="alert">
+            <%= success %>
+        </div>
+    <% } %>
+</div>
+// note:  this code includes Bootstrap 3 styling.  A bit obsolete.

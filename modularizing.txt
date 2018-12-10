@@ -1,0 +1,32 @@
+make a directory called "models" in the same directory level as "views"
+make a file such as "posts.js" in that dir:  touch models/post.js
+copy mongoose Schema and Model segments into the file.
+use module.exports.  This line sends something out of the file, kind of like a "return" in a function.
+   It looks like you can export an object or a model or a function (which is an object I suppose).
+require mongoose in this file
+require this file in app.js
+
+Example:
+./models/campground.js file:
+-------------
+var mongoose=require("mongoose");
+
+var campgroundSchema = new mongoose.Schema({
+   name: String,
+   image: String,
+   description: String
+});
+
+var Campground = mongoose.model("Campground", campgroundSchema);
+module.exports=Campground;
+//last two lines can be combined.  I left separate to emphasize we're exporting a variable which is an (model) object.
+---------------
+
+
+app.js file:
+---------------
+var Campground=require(./models/campground");
+
+---------------
+
+

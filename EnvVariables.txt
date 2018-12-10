@@ -1,0 +1,42 @@
+In order to keep the production database separate from the development database,
+easiest solution is to use Environment Variables.  
+
+We *could* just change the database connection depending on where we are running the code like this:
+
+
+// next line is to connect to mongo inside of C9
+mongoose.connect("mongodb://localhost/yelp_camp", { useNewUrlParser: true });
+
+// next line is to connect to mongo hosted at mLab
+mongoose.connect("mongodb://darrell:DbPw#321@ds119273.mlab.com:19273/darrell-yelpcamp", { useNewUrlParser: true });
+
+
+
+Instead, we set environment variables so the same line of code addresses the intended DB.
+
+// after setting environment variables in BOTH environments, we can use this:
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
+
+
+//To set this environment variable in C9  In terminal:
+export DATABASEURL=mongodb://localhost/yelp_camp
+
+// To set the env. variable in Heroku, you can go into Dashboard | project | settings | Config Variables
+
+// OR command line:  just see docs on Heroku.
+
+
+// ADDED BENEFIT OF ENV. VARIABLES IS TO HIDE INFO SUCH AS API KEYS, USERNAME PASSWORDS..
+// FROM ANYONE THAT SEES OUR CODE
+
+// You can set up a backup env. variable like this:
+
+var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
+mongoose.connect(url);
+
+// Then it will use the mongodb... as a backup default if the env. variable is not set for some reason.
+
+
+// Note:  In nodeJS, environment variables all look like "process.env.XXX"
+// In Ruby, enviroment variables look like "ENV['DATABASEURL']
+//  etc.

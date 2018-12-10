@@ -1,0 +1,23 @@
+make sure package.json is fully populated with all dependencies
+add a start script to package.json in the scripts key: {"start": "node app.js"}
+git init (if git isn't already set up) for the project in the dev environment.
+add and commit all files to master that you want to deploy
+in fully set up (for heroku) dev environment (C9 is set up already), in terminal:
+     heroku login -i
+        log in
+     heroku create   
+        (this will generate an random-named url associated with this git repo)
+        (this also creates a git remote named "heroku" -- see the associated urls by typing in terminal:  git remote -v)
+        (we can push to and fetch from the heroku remote.  Pushing to heroku is how we get our code onto the server.)
+     git push heroku master
+        (pushes our master to heroku)
+     heroku logs  (type this in C9 terminal if you need to see error messages for debugging)
+
+notes:
+    After "create" heroku dashboard will show our app and assorted info about it.
+    Can run terminal commands on heroku server.  Ex. "heroku run ls" will do "ls" on heroku.
+
+
+
+yelpcamp url:  https://still-scrubland-45503.herokuapp.com/
+

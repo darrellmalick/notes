@@ -1,0 +1,47 @@
+make a routes directory at the same level as /views...
+
+make a file for each group of routes you want to pull out.
+Eg. /routes/campgrounds.js
+Eg. /routes/comments.js
+Eg. /routes/index.js  (a common name for the general purpose routes incl. Authorization routes)
+
+Copy blocks of routes out of app.js and paste into /routs/whatever.js
+
+In the /routes/xx.js files - add this to the top:
+var express = require("express");
+var router = express.Router();
+
+Then change all the app.get or app.post's to 
+router.get(...)  or router.post(...)
+
+at the end of the file, add this line:
+module.exports = router;
+
+In app.js add "require" lines such as:
+var commentRoutes       = require("./routes/comments"),
+    campgroundRoutes    = require("./routes/campgrounds"),
+    indexRoutes         = require("./routes/index");
+    
+Also in app.js, add "app.use" just above the listener, such as:
+app.use(commentRoutes);
+app.use(campgroundRoutes);
+app.use(indexRoutes);
+
+In each of the routes/whatever.js files, add "require" for any models that need to be included.  For example:
+var Campground = require("../models/campground");
+var Comment = require("../models/comment");
+
+
+If every route in a file starts with some string, you can pull that string out to the
+"use" statement in app.js, so in our example, it becomes:
+
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/comments", commentRoutes);
+app.use(indexRoutes);
+
+and then you edit the routes in the routes/xx.js files, removing the redundant strings.
+
+AND, if you do that thing with passing ":id" through in the comments route, "request.params.id" for the
+campground won't make it through to the comments page.  To fix this, on the comments page, edit this line to this:
+var router = express.Router({mergeParams: true});
+

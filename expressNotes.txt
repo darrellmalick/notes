@@ -1,0 +1,111 @@
+1.  Make a root directory (such as YelpCamp)
+2.  npm init                        (creates package.json)
+3.  npm install express --save      (--save adds dependencies to package.json)
+4.  npm install ejs --save          (for embedded javascript)
+5.  npm install mongoose --save     (if you're using Mongo DB)
+6.  npm install body-parser --save         (used to get data out of a form.  Form sends data into request.body)
+7.  npm install method-override --save     (override POST methods to be PUT or DELETE or...)
+8.  npm install express-sanitizer --save    (sanitize potentially harmful html tags out of text inputs)
+
+6.  touch app.js and open it
+7.  import and initialize express at the top and listener at the bottom.
+
+---------
+var express = require("express");
+var app = express();
+
+var methodOverride = require("method-override");
+app.use(express.static("public"));  //so that we can serve our public style sheet.  "good practice to include at the beginning of any express app"  
+
+app.set("view engine", "ejs");      //so that you don't have to include .ejs in filenames
+
+
+app.listen(process.env.PORT, process.env.IP, function(){
+   console.log("YelpCamp server started...");
+});
+----------
+
+
+7.  add ROUTES.  eg:
+
+----------
+app.get("/", function(request, response){
+   response.render("landing");
+});
+----------
+
+
+8.  set up templates. 
+9.  Make "views" directory:  mkdir views
+10.  Make a template:  touch views/landing.ejs
+11.  open it, add a little simple test html
+12.  To pass data into a template, add it to the render parameters
+
+-----------
+app.get("/", function(request, response){
+   response.render("landing", {campgrounds:campgrounds});  //first variable is used in template, second is in node app
+});
+-----------
+
+
+13.  set up "partials"
+14.  inside "views" directory, create "partials" directory
+15.  create some partials
+
+-----------
+darrellmalick:~/workspace/YelpCamp $ mkdir views/partials
+darrellmalick:~/workspace/YelpCamp $ touch views/partials/header.ejs
+darrellmalick:~/workspace/YelpCamp $ touch views/partials/footer.ejs
+-----------
+
+
+16.  header partial contains all the boilerplate
+
+-----------
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Yelp Camp</title>
+</head>
+<body>
+-----------
+
+
+17.  footer partial contains the bottom bit
+
+----------
+    <p>testing:  this is from the footer partial</p>
+    </body>
+</html>
+-----------
+
+
+18.  include partials inside the landing page  (landing.ejs)
+
+-----------
+<% include partials/header %>   // include header partial
+
+<h1>Landing Page</h1> ...and all the other content of landing.ejs
+
+<% include partials/footer %>   // include footer partial
+-----------
+
+
+19.  optional:  install bootstrap into header and footer - see bootstrap docs.
+20.  optional:  npm install body-parser --save   (used to parse JSON bodies)
+21.  add body-parser to app.js:
+
+-----------
+var bodyParser = require ("body-parser");
+app.use(bodyParser.urlencoded({extended: true}));
+-----------
+
+
+22.  Mongo setup process:  Connect, Schema, Model.
+
+------------
+mongoose.connect("mongodb://localhost/db-name-to-use", { useNewUrlParser: true });
+
+
+
+------------

@@ -1,0 +1,15 @@
+You need body-parser to get data out of a form.  app.js should include:
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended: true}));
+
+
+In the form declaration, looks like this:
+
+<form action="/register" method="POST">
+    <input type="text" name="username" placeholder="username"></input>
+    <input type="password" name="password" placeholder="password"></input>
+    <button>Submit</button>  <!--html tip: as long as the button is at the end of the form it will submit the form-->
+</form>
+
+This form sends a POST request to "/register"
+Note that you can just use a button at the END of the form and it will submit the data.
