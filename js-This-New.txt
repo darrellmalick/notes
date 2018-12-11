@@ -1,0 +1,217 @@
+=================================
+THE KEYWORD "this" IN JAVASCRIPT:
+=================================
+
+
+
+*  Is a reserved keyword in js, which means it can't be assigned as a variable name.
+*  It's value is determined using 4 rules:
+
+1.  GLOBAL
+2.  OBJECT/IMPLICIT
+3.  EXPLICIT
+4.  NEW
+
+
+GLOBAL
+------
+
+If you see "this" outside of a declared *object*, it refers to value of the "Global Object", which
+in the browser is "window".  (Every variable declared in the global scope is attached to the
+window object)
+
+var person = "Elie"
+window.person  //returns "Ellie"
+window.person === person  //true
+
+this.person  //returns "Ellie"
+
+console.log(this);  //Window {...}
+
+
+OBJECT/IMPLICIT
+---------------
+
+When "this" is inside a declared object, the value of "this" will be the "closest parent object."
+
+var person = {
+    firstName: "Elie",
+    sayHi: function(){
+        return "Hi " + this.firstName;
+    },
+    determineContext: function(){
+        return this === person;
+    }
+}
+
+person.firstName;  //"Elie"
+person.sayHi();  //"Hi Elie"
+person.determineContext();  //true
+
+
+Nested objects
+--------------
+
+var person = {
+    firstName: "Colt",
+    sayHi: function(){
+        return "Hi " + this.firstName;
+    },
+    dog: {
+        sayHello: function(){
+            return "Hello " + this.firstName;
+        },
+        determineContext: function(){
+            return this === person;
+        }
+    }
+}
+
+person.firstName;  //"Colt"
+person.sayHi();  //"Hi Elie"
+person.dog.sayHello();  //"Hello undefined"
+person.dog.determineContext();  //false  (this=dog)
+
+
+EXPLICIT  (CALL, APPLY, BIND)
+-----------------------------
+
+Choose what we want the context of "this" to be inside a function by using call, apply or bind.
+Call, apply and bind methods can ONLY be used on/by functions, not by any other data type.
+
+Name of method       Parameters               Invoke immediately?
+------------------|------------------------|-----------------------
+call              |  thisArg,a,b,c,d,...   |  Yes
+apply             |  thisArg,[a,b,c...]    |  Yes
+bind              |  thisArg,a,b,c,d,...   |  No
+
+Bind method works like call except instead of calling the function right away, it
+returns a function definition with the keyword "this" set to the value of the "thisArg".
+Often useful when we don't know the arguments that will be passed, and in asyncronous code.
+
+
+Call example
+------------
+
+person.dog.sayHello.call(person); //"Hello Colt"
+person.dog.determineContext.call(person);  //true
+
+-----
+
+var colt = {
+    firstName: "Colt",
+    sayHi: function(){
+        return "Hi " + this.firstName;
+    }
+}
+
+var elie = {
+    firstName: "Elie",
+}
+
+colt.sayHi.call(elie);  //"Hi Elie"
+
+
+Apply example
+-------------
+
+var colt={
+    firstName: "Colt",
+    sayHi: function(){
+        return "Hi " + this.firstName;
+    },
+    addNumbers: function(a,b,c,d){
+        return this.firstName + " just calculated " + (a+b+c+d);
+    }
+}
+
+var elie={
+    firstName: "Elie"
+}
+
+colt.sayHi();  //"Hi Colt"
+colt.sayHi.call(elie);  //"Hi Elie"
+colt.addNumbers(1,2,3,4)  //"Colt just calculated 10"
+colt.addNumbers.call(elie,1,2,3,4)  //"Elie just calculated 10"
+colt.addNumbers.apply(elie,[1,2,3,4]);  //"Elie just calculated 10"
+
+
+Bind example
+------------
+
+var colt={
+    firstName: "Colt",
+    sayHi: function(){
+        return "Hi " + this.firstName;
+    },
+    addNumbers: function(a,b,c,d){
+        return this.firstName + " just calculated " + (a+b+c+d);
+    }
+}
+
+var elie={
+    firstName: "Elie"
+}
+
+var elieCalc = colt.addNumbers.bind(elie,1,2,3,4);
+elieCalc();  //"Elie just calculated 10"
+
+//"Partial Application"  (some of the values are set but not all)
+var elieCalc2 = colt.addNumbers.bind(elie,1,2);
+elieCalc(3,4);  //"Elie just calculated 10"
+
+
+Asyncronous code using bind example
+-----------------------------------
+
+setTimeout(function, milliseconds) is a funciton used to execute a function once after a specified 
+    interval has passed.  It is a method on the Window object.
+    
+var colt = {
+    firstName: "Colt",
+    sayHi: function(){
+        setTimeout(function(){
+            console.log("Hi " + this.firstName);
+        }, 10000);
+    }
+}
+
+colt.sayHi();  //Hi undefined (displayed after 10 second delay)
+
+since the function is executed at a later time, we lost the context of "this" to 
+    the global object which setTimeout is a function of.  Even though it was defined 
+    inside of an object, it was executed later, in the global context.  Since we're losing
+    the context for "this", we should explicitly set it using "bind".
+
+var colt = {
+    firstName: "Colt",
+    sayHi: function(){
+        setTimeout(function(){
+            console.log("Hi " + this.firstName);
+        }.bind(this), 10000);
+    }
+}
+
+colt.sayHi();  //Hi Colt (after 10 seconds)
+
+
+"NEW" KEYWORD
+-------------
+
+"new" causes a new object to be created.
+"new" is used with a funciton.  Inside a function with "new", "this" refers to
+    the newly created object.
+A function with the "new" keyword is a "constructor" and its variable name should 
+    be capitalized by convention.
+    
+-----
+    
+function Person(firstName,lastName){
+    this.firstName=firstName;
+    this.lastName=lastName;
+}
+
+var elie = new Person("Elie", "Smith");
+
+elie.firstName;  //"Elie"
+
