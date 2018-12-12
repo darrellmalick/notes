@@ -1,0 +1,5 @@
+git add -A                      //adds all files and directories to staging area.  
+git add .                       //adds all new and changed files to staging area.
+
+git branch                      //shows all the branches in your repo.
+git checkout <branch-name> -b   //make a new branch and switch to it.
