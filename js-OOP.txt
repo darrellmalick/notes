@@ -1,0 +1,61 @@
+No "classes" in js.  We use funcitons and objects to mimic.
+
+"Blueprint" for an object is a function called a Constructor Function.
+example.  Note function name is capitalized by convention.
+
+
+function House(bedrooms, bathrooms, numSqft){
+    this.bedrooms=bedrooms;
+    this.bathrooms=bathrooms;
+    this.numSqft=numSqft;
+}
+
+var firstHouse = new House(2,2,1000);
+firstHouse.bedrooms;  //2
+
+keyword "new":
+1.  creates an empty object
+2.  sets value of "this" to be the empty object that was just created.
+3.  adds an implicit "return this;" to the end of the function
+4.  it adds the __proto__ property to the object.
+
+
+
+Multiple constructors (refactoring)
+
+function Car(make,model,year){
+    this.make=make;
+    this.model=model;
+    this.year=year;
+    this.wheels=2;
+}
+function Motorcycle(make,model,year){
+    Car.apply(this,arguments);  //we get the properties and methods from Car, but assign "this" to motorcycle obj.
+    this.numWheels=2;           //arguments is a list (array) of all the parameters.
+}
+
+
+Using the prototype object of a constructor:
+Look at this code.  Imagine you are going to create 1 million persons.
+
+function Person(name){
+    this.name=name;
+    this.sayHi = function(){
+        return "Hi " + this.name;
+    }
+}
+
+The sayHi function will be created 1 million separate times.  Instead this is much more efficient:
+
+function Person(name){
+    this.name=name;
+}
+
+Person.prototype.sayHi = function(){
+    return "Hi " + this.name;
+}
+
+elie = new Person("Elie");
+elie.sayHi();  // "Hi Elie"
+
+
