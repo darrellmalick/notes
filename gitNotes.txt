@@ -3,3 +3,17 @@ git add .                       //adds all new and changed files to staging area
 
 git branch                      //shows all the branches in your repo.
 git checkout <branch-name> -b   //make a new branch and switch to it.
+
+(from branch master)
+git merge <branch-name>         //merge branch-name into master.
+
+git branch -d <branch-name>     //delete branch-name.  This should be a fairly rare operation.
+
+git remote -v                   //see what remotes are set up.
+
+(to push updates from C9 to Git)
+git push -u origin master       //this is the initial push command to get repo cloned to github.
+git push origin master          //this seems to work fine after initial push.
+
+
+
